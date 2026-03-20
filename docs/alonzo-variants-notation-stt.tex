@@ -1,0 +1,77 @@
+%% LaTeX Macros for Alonzo Variants Notation
+%%
+%% William M. Farmer
+%%
+%% McMaster University
+%%
+%% March 12, 2024
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% MISCELLANEOUS MACROS
+
+\newcommand{\mSembrack}[1]{\llbracket#1\rrbracket}
+\newcommand{\mSynbrack}[1]{\ulcorner#1\urcorner}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% FORMAL NOTATION
+
+% Alonzo S Types
+
+\newcommand{\fAtSort}[1]{\mName{AtSort}(#1)}
+\newcommand{\fFunSort}[2]{\mName{FunSort}(#1,#2)}
+\newcommand{\fProdSort}[2]{\mName{ProdSort}(#1,#2)}
+
+% Alonzo QE Types
+
+\newcommand{\fExprTy}{\mName{ExprTy}}
+
+% Alonzo ID Expressions
+
+\newcommand{\fIndefDes}[3]{\mName{IndefDes}(\fVar{#1}{#2},#3)}
+
+% Alonzo QE Expressions
+
+\newcommand{\fQuote}[1]{\mName{Quote}(#1)}
+\newcommand{\fEval}[2]{\mName{Eval}(#1,#2)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% COMPACT NOTATION
+
+% Alonzo S Types
+
+\newcommand{\cAtSort}[1]{#1}
+\newcommand{\cFunSort}{\cFunTy}
+\newcommand{\cFunSortX}{\cFunTyX}
+\newcommand{\cProdSort}{\cProdTy}
+\newcommand{\cProdSortX}{\cProdTyX}
+
+% Alonzo QE Types
+
+\newcommand{\cExprTy}{\epsilon}
+
+% Alonzo ID Expressions
+
+\newcommand{\cIndefDes}[3]{(\epsilon\, #1 : #2 \mDot #3)}
+\newcommand{\cIndefDesX}[3]{\epsilon\, #1 : #2 \mDot #3}
+
+% Alonzo S Expressions
+
+\newcommand{\cIfSort}[3]{(#1 \mapsto #2 \mid #3)}
+\newcommand{\cIfSortX}[3]{#1 \mapsto #2 \mid #3}
+\newcommand{\cIsDefInSort}[2]{({#1} \downarrow {#2})}
+\newcommand{\cIsDefInSortX}[2]{{#1} \downarrow {#2}}
+\newcommand{\cIsUndefInSort}[2]{({#1} \uparrow {#2})}
+\newcommand{\cIsUndefInSortX}[2]{{#1} \uparrow {#2}}
+\newcommand{\cSubsorteq}[2]{({#1} \subseteq {#2})}
+\newcommand{\cSubsorteqX}[2]{{#1} \subseteq {#2}}
+\newcommand{\cEqSort}[2]{({#1} = {#2})}
+\newcommand{\cEqSortX}[2]{{#1} = {#2}}
+
+% Alonzo QE Expressions
+
+\newcommand{\cQuote}[1]{\mSynbrack{#1}}
+\newcommand{\cEval}[2]{\mSembrack{#1}_{#2}}
+
