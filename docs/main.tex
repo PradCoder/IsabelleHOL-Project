@@ -1,0 +1,132 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{minted}
+\usepackage{amsthm, amsmath, amssymb, amsfonts}
+\usepackage{hyperref, url}
+
+\title{Software Project}
+\author{Hamza Jamil, Pesara Amarasekera}
+\date{March 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Isabelle/HOL, is a proof assitant and programming language that is a variant of HOL.
+We can split the discussion of Isabelle/HOL thus. 
+\textbf{Isabelle} is an interactive theorem prover written in Standard ML. It
+was developed by Researchers at the University of Cambridge (Larry Paulson),
+TU M\"unchen (Tobias Nipkow) and Universite Paris-Sud (Makarius Wenzel).
+
+It is a generic system used as a specification and verification system and for implementing
+logical formalizsm.
+
+Isabelle uses Isar as the proof language that structures the proof written to look like a human
+readable proof.
+
+Isabelle is used widely in industry, for instance in verifying operating system kernels.
+And in academia in large math projects, such as verifying the kepler conjecture. 
+
+\textbf{HOL} stands for Higher-Order Logic, ans is used for expressing theorems in Isabelle.
+\[ \text{HOL} = \text{Functional Programming} + \text{Logic}\]
+Isabelle's implementation in ML has influences in some of HOL's concrete syntax.
+
+\url{https://www.youtube.com/watch?v=1nEpUoVopT0&list=PL88g1zsvCrjd5cbOLsN6NLn1yX7azcTS6}
+
+\section{Source Code}
+\begin{minted}{HOL}
+theory Scratch
+  imports Main
+begin
+
+type_synonym 'a queue = "'a list"
+
+definition empty :: "'a queue" where
+  "empty = []"
+
+definition enqueue :: "'a queue ⇒ 'a ⇒ 'a queue" where
+  "enqueue q x = q @ [x]"
+
+fun dequeue :: "'a queue ⇒ ('a queue × 'a)" where
+  "dequeue [] = undefined"
+| "dequeue (x # xs) = (xs, x)"
+
+definition front :: "'a queue ⇒ 'a" where
+  "front q = snd (dequeue q)"
+
+definition rest :: "'a queue ⇒ 'a queue" where
+  "rest q = fst (dequeue q)"
+
+definition singleton :: "'a ⇒ 'a queue" where
+  "singleton x = enqueue empty x"
+
+lemma dequeue_enqueue_empty:
+  "dequeue (enqueue empty x) = (empty, x)"
+  unfolding enqueue_def empty_def
+  by simp
+
+lemma front_singleton:
+  "front (singleton x) = x"
+  unfolding front_def singleton_def
+  by (simp add: dequeue_enqueue_empty)
+
+lemma rest_singleton:
+  "rest (singleton x) = empty"
+  unfolding rest_def singleton_def
+  by (simp add: dequeue_enqueue_empty)
+
+lemma front_enqueue_nonempty:
+  "q ≠ empty ⟹ front (enqueue q x) = front q"
+  unfolding front_def enqueue_def empty_def
+  by (cases q) simp_all
+
+lemma rest_enqueue_nonempty:
+  "q ≠ empty ⟹ rest (enqueue q x) = enqueue (rest q) x"
+  unfolding rest_def front_def enqueue_def empty_def
+  by (cases q) simp_all
+
+end
+\end{minted}
+
+We also present and experiment with locales, adding infix notation,
+and precedence.
+\begin{minted}{HOL}
+theory Experiments
+  imports Main
+begin
+
+(*Locale definition of magma as a base theory definition*)
+locale magma =
+  fixes f :: "'a ⇒ 'a ⇒ 'a" (infixl "⊗" 70)
+
+(*Locale definition of semigroup extending magma*)
+locale semigroup = magma +
+  assumes assoc: "(a ⊗ b) ⊗ c = a ⊗ (b ⊗ c)"
+
+(*Locale definition of monoid extending semigroup*)
+locale monoid = semigroup +
+  fixes z :: "'a" ("e")
+  assumes left_neutral [simp]: "e ⊗ a = a"
+  assumes right_neutral [simp]: "a ⊗ e = a" 
+
+(*Locale definition of group extending monoid*)
+locale group = monoid +
+  fixes inv :: "'a ⇒ 'a" ("(_⇧-⇧1)" [1000] 999)
+  assumes left_inverse [simp]: "inv a ⊗ a = e"
+  assumes right_inverse [simp]: "a ⊗ inv a = e"
+
+(*Sledgehammered proof of inverse_identity *)
+lemma (in group) inv_identity [simp]: "inv e = e"
+  by (metis Experiments.group.right_inverse
+      Experiments.monoid.left_neutral group_axioms
+      monoid_axioms)
+
+end
+\end{minted}
+
+I experimented with trying to find a proof by forcing isabelle to search
+the file to use proof terms that would suffice to show my statement, this was
+done via the \texttt{sledgehammer} command
+\end{document}
