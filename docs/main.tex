@@ -1,8 +1,26 @@
 \documentclass{article}
-\usepackage{graphicx} % Required for inserting images
-\usepackage{minted}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
 \usepackage{amsthm, amsmath, amssymb, amsfonts}
 \usepackage{hyperref, url}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{lmodern}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=flexible,
+  keepspaces=true,
+  literate=
+    {⇒}{{$\Rightarrow$}}1
+    {×}{{$\times$}}1
+    {≠}{{$\neq$}}1
+    {⟹}{{$\Longrightarrow$}}1
+    {⊗}{{$\otimes$}}1
+    {⇧}{{\textasciicircum}}1,
+}
 
 \title{Software Project}
 \author{Hamza Jamil, Pesara Amarasekera}
@@ -14,29 +32,131 @@
 
 \section{Introduction}
 
-Isabelle/HOL, is a proof assitant and programming language that is a variant of HOL.
-We can split the discussion of Isabelle/HOL thus. 
+Isabelle/HOL is a proof assistant and formal system that is a variant of HOL.
+We can split the discussion of Isabelle/HOL as follows.
 \textbf{Isabelle} is an interactive theorem prover written in Standard ML. It
-was developed by Researchers at the University of Cambridge (Larry Paulson),
-TU M\"unchen (Tobias Nipkow) and Universite Paris-Sud (Makarius Wenzel).
+was developed by researchers at the University of Cambridge (Larry Paulson),
+TU M\"unchen (Tobias Nipkow), and Universit\'e Paris-Sud (Makarius Wenzel).
 
 It is a generic system used as a specification and verification system and for implementing
-logical formalizsm.
+logical formalism.
 
-Isabelle uses Isar as the proof language that structures the proof written to look like a human
-readable proof.
+Isabelle uses Isar as its proof language, which structures proofs to be human-readable.
 
-Isabelle is used widely in industry, for instance in verifying operating system kernels.
-And in academia in large math projects, such as verifying the kepler conjecture. 
+Isabelle is used widely both in industry, for instance in verifying operating system kernels \cite{klein2009sel4}, and in academia, such as in the formal verification of the Kepler Conjecture \cite{hales2017flyspeck}.
 
-\textbf{HOL} stands for Higher-Order Logic, ans is used for expressing theorems in Isabelle.
+\textbf{HOL} stands for Higher-Order Logic, and is used for expressing theorems in Isabelle.
 \[ \text{HOL} = \text{Functional Programming} + \text{Logic}\]
-Isabelle's implementation in ML has influences in some of HOL's concrete syntax.
+HOL provides a unified language for definitions and proofs. This allows programs, functions
+and formulas to live within the same framework. HOL is a typed logic and implements STT.
+Due to HOL's structure we can treat functions and formulas (terms of type bool) as first-class objects.
 
-\url{https://www.youtube.com/watch?v=1nEpUoVopT0&list=PL88g1zsvCrjd5cbOLsN6NLn1yX7azcTS6}
+Isabelle's implementation in ML influences some of HOL's concrete syntax.
+
+For a video introduction to Isabelle/HOL, see \cite{Bhargavtutorial}.
+
+
+\section{Theory and Definition Development}
+
+In Isabelle as well as in STT, every expression must be well-typed. Types prevent the introduction of meaningless
+expressions, and provide a guarantee at the typechecker level. Isabelle also supports type inference, allowing
+the user to simplify their codes and proofs, as well as construct them.
+
+Like most functional programming languages Isabelle/HOL uses type variables for polymorphism.
+HOL is a logic of total functions; this implies that recursive definitions in HOL must always terminate.
+There cannot be any inconsistent definitions, and this distinguishes HOL from other systems with STT that allow undefined terms directly.
+
+The translation from Alonzo to HOL is fairly straightforward; we can build our definitions
+in a similar manner.
+
+We can build our definitions and theorems in an interactive manner:
+we begin with goals and break them down into subgoals, and keep applying methods, definitions and tactics to resolve these
+subgoals until no subgoals remain.
+\[\text{Goal} \to \text{Subgoals} \to \text{No subgoals}\]
+
+\cite{nipkow2002isabelle}
+
+The power of Isabelle/HOL is being able to mechanically verify our theorems using proofs written
+inside itself. Most of our proofs were able to be handled directly via the \texttt{simp}
+tactic (it transforms our provided assumptions and theorems into the statement we're looking to prove).
+The ability to do proof searches via tactics like \texttt{sledgehammer} was a fun surprise;
+it's a good demonstration of the brute-force approach to proof search.
+
+We also have the use of other tactics (subprograms for rewriting statements), such as \texttt{auto}, which
+provides more complex automation than \texttt{simp} with its ability to handle multiple subgoals at once,
+and \texttt{induct\_tac} which handles induction. It is usually the case that we apply a tactic like induction followed by simplification.
+
+Furthermore, the concept of Locales was quite intuitive going from the Alonzo little theories approach to development. I could
+develop some of the necessary theories and definitions and structures for groups, starting off with a definition
+of a magma. Without needing to define things twice, much like how parent classes work in OOP and typeclasses work in
+FP, but for proofs! (Exciting). I followed the following development structure with this regard.
+
+\[magma \to semigroup \to monoid \to group \]
+
+This is akin to how these structures are developed naturally, in order of increasing complexity.
+
+The proof structure of an Isabelle/HOL proof is as follows:
+
+\begin{lstlisting}
+lemma app_assoc [simp]: "(xs @ ys) @ zs = xs @ (ys @ zs)"
+apply(induct_tac xs)
+apply(auto)
+done
+\end{lstlisting}
+
+We use the \texttt{lemma} keyword or \texttt{theorem} for anything we want to prove
+then we apply tactics until we finish our proof at \texttt{done}.
+
+Isabelle organizes theories into files, and theories contain
+\begin{itemize}
+  \item types
+  \item functions / definitions
+  \item lemmas and theorems
+  \item proofs
+\end{itemize}
+
+We can see the theory structure below:
+\begin{lstlisting}
+theory T
+  imports Main
+begin
+
+(* declarations, definitions, proofs *)
+
+end
+\end{lstlisting}
+This type of structure allows our constructs to be modular, while allowing an incremental
+development cycle, and keeps our artefacts reusable.
+
+Isabelle/HOL allows new concepts to be introduced via definitions, and avoids arbitrary axioms 
+wherever possible. We can develop recursive definitions safely via commands like \texttt{primrec}.
+This kind of development helps preserve consistency across the artefacts produced.
+
+The ability of theories to build on earlier ones is an example of inherited structure in software development;
+we can also see this structure in locales.
+\section{Opinion on Isabelle/Jedit interface}
+
+The standard interface is called Isabelle/JEdit. I did not enjoy using it that much; it's quite different from using Lean and Agda, or even writing in Haskell.
+I found inputting unicode to be rather cumbersome, for instance it doesn't simplify
+input immediately after tabbing, and I had to undo and wait for a dropdown menu to appear to enter the wanted input.
+Otherwise it's just preference. I found that the cursor-based development (i.e. using the cursor to alter and change proofs)
+to be rather useful, it's similar to using holes and refinements in Agda.
+
+In the end I think JEdit is a much worse interface because I'm used to the Agda and Lean way of doing things.
+I never would've thought I would appreciate the work of UI/UX designers (as I'm more of a mathematician), in the course of this
+project. But UI/UX is an intermediary language and careful work should go into developing these,
+depending on the audience that you'd be marketing these tools towards. Having a great logic, with fancy
+functionality is great and all, but if you can't get users to actually use what you have, well that's arguably
+more concerning.
+
+I think they should use something other than the JVM in developing an Interface for Isabelle, because
+it's a bit slower than I like it to be.
+
 
 \section{Source Code}
-\begin{minted}{HOL}
+
+We present a construction of queues using the internal list
+\begin{lstlisting}
 theory Scratch
   imports Main
 begin
@@ -88,11 +208,11 @@ lemma rest_enqueue_nonempty:
   by (cases q) simp_all
 
 end
-\end{minted}
+\end{lstlisting}
 
 We also present and experiment with locales, adding infix notation,
 and precedence.
-\begin{minted}{HOL}
+\begin{lstlisting}
 theory Experiments
   imports Main
 begin
@@ -124,9 +244,12 @@ lemma (in group) inv_identity [simp]: "inv e = e"
       monoid_axioms)
 
 end
-\end{minted}
+\end{lstlisting}
 
-I experimented with trying to find a proof by forcing isabelle to search
-the file to use proof terms that would suffice to show my statement, this was
-done via the \texttt{sledgehammer} command
+I experimented with proof search, forcing Isabelle to find proof terms sufficient to
+establish my statement; this was done via the \texttt{sledgehammer} command.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
 \end{document}

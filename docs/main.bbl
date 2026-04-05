@@ -1,0 +1,24 @@
+\begin{thebibliography}{1}
+
+\bibitem{hales2017flyspeck}
+Thomas Hales, Mark Adams, Gertrud Bauer, Tat~Dat Dang, John Harrison, Le~Truong Hoang, Cezary Kaliszyk, Victor Magron, Sean McLaughlin, Tat~Thang Nguyen, Quang~Truong Nguyen, Tobias Nipkow, Steven Obua, Joseph Pleso, Jason Rute, Alexey Solovyev, Thi Hoai~An Ta, Nam~Trung Tran, Thi~Diep Trieu, Josef Urban, Ky~Vu, and Roland Zumkeller.
+\newblock A formal proof of the {Kepler} conjecture.
+\newblock {\em Forum of Mathematics, Pi}, 5:e2, 2017.
+
+\bibitem{klein2009sel4}
+Gerwin Klein, Kevin Elphinstone, Gernot Heiser, June Andronick, David Cock, Philip Derrin, Dhammika Elkaduwe, Kai Engelhardt, Rafal Kolanski, Michael Norrish, Thomas Sewell, Harvey Tuch, and Simon Winwood.
+\newblock {seL4}: Formal verification of an {OS} kernel.
+\newblock In {\em Proceedings of the 22nd ACM Symposium on Operating Systems Principles (SOSP)}, pages 207--220. ACM, 2009.
+
+\bibitem{nipkow2002isabelle}
+Tobias Nipkow, Lawrence~C. Paulson, and Markus Wenzel.
+\newblock {\em Isabelle/{HOL}: A Proof Assistant for Higher-Order Logic}, volume 2283 of {\em Lecture Notes in Computer Science}.
+\newblock Springer, 2002.
+
+\bibitem{Bhargavtutorial}
+Bhargav Shivkumar.
+\newblock Isabelle theorem prover tutorial.
+\newblock \url{https://www.youtube.com/watch?v=1nEpUoVopT0&list=PL88g1zsvCrjd5cbOLsN6NLn1yX7azcTS6}, 2020.
+\newblock Accessed: 2026.
+
+\end{thebibliography}
